@@ -17,11 +17,11 @@ public class MessageController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<?> sendMessage(
+    public ResponseEntity<?> sendMessageToQueueWithType(
             @RequestBody Message message,
             @RequestParam String type
     ) throws JsonProcessingException {
-        messageProducerService.sendMessage(message, type);
+        messageProducerService.sendMessageToQueueWithType(message, type);
 
         return ResponseEntity.ok("Message sent successfully: " + message.getMessage());
     }

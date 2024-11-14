@@ -27,7 +27,7 @@ public class MessageProducerService {
     }
 
 
-    public void sendMessage(
+    public void sendMessageToQueueWithType(
             Message customMessage,
             String type
     ) throws JsonProcessingException {
