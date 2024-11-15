@@ -50,7 +50,7 @@ public class MessageProducerService {
 
         String jsonMessage = objectMapper.writeValueAsString(customMessage);
 
-        queueJmsTemplate.convertAndSend(topicName, jsonMessage, message -> {
+        queueJmsTemplate.convertAndSend(queueName, jsonMessage, message -> {
             message.setStringProperty("type", type);
             return message;
         });
