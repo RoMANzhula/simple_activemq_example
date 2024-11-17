@@ -1,0 +1,68 @@
+1. In IDEA terminal: docker run -d --name activemq -p 61616:61616 -p 8161:8161 rmohr/activemq
+        or next command with more memory:
+   docker run -d --name activemq -p 61616:61616 -p 8161:8161 -e ACTIVEMQ_OPTS_MEMORY="-Xms64M -Xmx512M" -e ACTIVEMQ_OPTS="-Dactivemq.memoryUsage=1GB -DwireFormat.maxFrameSize=1073741824" rmohr/activemq
+
+2. In browser go to: http://localhost:8161/admin (U: admin, P: admin)
+
+3. Commands for stop:
+    docker start activemq   - if we already have activemq container
+    docker stop activemq    - stop activemq
+    docker rm activemq      - remove activemq container
+    docker rm -f activemq   - stop and remove activemq
+
+4. Consumers
+    - consumer-a - consumer for messages from queue named "firstQueue" with type ERROR or INFO and
+     commented receiver for message with any types;
+    - consumer-b - consumer for messages from topic named "myTopic" with type ERROR or
+     INFO and commented receiver for message from topic named "firstTopic" for all subscribers;
+    - consumer-c - combined consumer for messages from queue named "myQueue" and one topic named "myTopic" but
+     with two different settings (without type and UNKNOWN type)
+
+5. Postman checks
+    - create topic TESTt - POST: http://localhost:8080/api/v1/createTopic?topicName=TEST
+    - create queue TESTq - POST: http://localhost:8080/api/v1/createQueue?queueName=TESTq
+    - send message to topic firstTopic without type - POST: http://localhost:8080/api/v1/sendToTopic?topicName=firstTopic
+        Body -> raw:
+        {
+            "message": "This is a test message to TOPIC firstTopic"
+        }
+    - send message to queue firstQueue - POST: http://localhost:8080/api/v1/sendToQueue?queueName=firstQueue
+        Body -> raw:
+        {
+            "message": "This is a test message to queue firstQueue"
+        }
+    - send message to queue myQueue with type INFO - POST: http://localhost:8080/api/v1/sendMessageToQueueWithTypeTwoParams?type=INFO
+        Body -> raw
+        {
+            "message": "This is a test message... 1, queue myQueue with type INFO"
+        }
+    - send message to queue firstQueue with type INFO - POST: http://localhost:8080/api/v1/sendMessageToQueueWithTypeTwoParams?type=INFO
+        Body -> raw:
+        {
+            "message": "This is a test message... 1, queue firstQueue with type INFO"
+        }
+    - send message to topic myTopic with type ERROR - POST: http://localhost:8080/api/v1/sendToTopicWithType?type=ERROR
+        Body -> raw:
+        {
+            "message": "This is a test message to TOPIC TEST with type ERROR"
+        }
+    - send message to topic myTopic with type INFO - POST: http://localhost:8080/api/v1/sendToTopicWithType?type=INFO
+        Body -> raw:
+        {
+            "message": "This is a test message to TOPIC myTopic with type INFO"
+        }
+    - send message to queue myQueue with type ERROR - POST: http://localhost:8080/api/v1/sendToQueueWithType?type=ERROR
+        Body -> raw:
+        {
+            "message": "This is a test message to queue myQueue... 2, with type: ERROR"
+        }
+    - send message to topic myTopic without type - POST: http://localhost:8080/api/v1/sendToTopicWithoutType
+        Body -> raw:
+        {
+            "message": "This is a test message to TOPIC myTopic without types"
+        }
+    - send message to queue myQueue without type - POST: http://localhost:8080/api/v1/sendToQueueWithoutType
+        Body -> raw:
+        {
+            "message": "This is a test message to queue myQueue without type"
+        }
