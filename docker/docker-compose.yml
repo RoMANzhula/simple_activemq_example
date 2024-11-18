@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  activemq:
+    build:
+      context: ../activemq
+    container_name: activemq
+    image: rmohr/activemq
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    environment:
+      - ACTIVEMQ_ADMIN_LOGIN=admin
+      - ACTIVEMQ_ADMIN_PASSWORD=admin
+    networks:
+      - activemq-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8161"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  producer:
+    build:
+      context: ../activemq-producer
+    container_name: activemq-producer
+    depends_on:
+      activemq:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: activemq-producer
+    networks:
+      - activemq-network
+    entrypoint: ["sh", "-c", "sleep 30 && java -jar app.jar"]
+
+  consumer-a:
+    build:
+      context: ../activemq-consumer-a
+    container_name: activemq-consumer-a
+    depends_on:
+      activemq:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: activemq-consumer-a
+    networks:
+      - activemq-network
+    entrypoint: ["sh", "-c", "sleep 30 && java -jar app.jar"]
+
+  consumer-b:
+    build:
+      context: ../activemq-consumer-b
+    container_name: activemq-consumer-b
+    depends_on:
+      activemq:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_APPLICATION_NAME: activemq-consumer-b
+    networks:
+      - activemq-network
+    entrypoint: ["sh", "-c", "sleep 30 && java -jar app.jar"]
+
+  consumer-c:
+    build:
+      context: ../activemq-consumer-c
+    container_name: activemq-consumer-c
+    depends_on:
+      activemq:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_APPLICATION_NAME: activemq-consumer-c
+    networks:
+      - activemq-network
+    entrypoint: ["sh", "-c", "sleep 30 && java -jar app.jar"]
+
+networks:
+  activemq-network:
+    driver: bridge
