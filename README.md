@@ -7,7 +7,7 @@ The project showcases how to implement queues and topics for asynchronous messag
 
 ---
 
-## **Technologies Used**
+## **Technologies Used:**
 
 ### **1. Apache ActiveMQ**
 Apache ActiveMQ is a powerful open-source message broker supporting various protocols such as JMS (Java Message Service). We use ActiveMQ for message exchange between microservices.
